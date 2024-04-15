@@ -1,0 +1,9 @@
+<launch>
+
+    <include file="$(find taxpose_ros)/launch/multi_azure_kinect_w_filter.launch">
+        <arg name="n" value="3"/>
+        <arg name="sensor_sn" value="000059793712"/>
+        <arg name="wired_sync_mode" value="2"/>
+    </include>
+
+</launch>

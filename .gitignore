@@ -1,0 +1,6 @@
+scripts/*.MOV
+scripts/trials/
+scripts/data/
+trials/
+calib_recordings/
+**/__pycache__/**

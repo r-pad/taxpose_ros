@@ -1,0 +1,40 @@
+<launch>
+  <!-- Launch cameras -->
+  <include file="$(find rpad_ros)/launch/launch_table1_cameras.launch" />
+  
+  <!-- Launch an octomap -->
+  <!-- <node pkg="octomap_server" type="octomap_server_node" name="octomap_server"> -->
+		<!-- <param name="resolution" value="0.05" /> -->
+		
+		<!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+		<!-- <param name="frame_id" type="string" value="world" /> -->
+		
+		<!-- maximum range to integrate (speedup!) -->
+		<!-- <param name="sensor_model/max_range" value="5.0" /> -->
+		
+		<!-- data source to integrate (PointCloud2) -->
+		<!-- <remap from="cloud_in" to="/points_concatenated" /> -->
+	
+	<!-- </node> -->
+  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+  <!-- Create a node which filters the concatenated point cloud above z=-0.03 -->
+    <node pkg="nodelet" type="nodelet" name="crop_box" args="load pcl/CropBox pcl_manager" output="screen">
+        <remap from="~input" to="/points_concatenated" />
+        <remap from="~output" to="/points_above_table" />
+        <rosparam>
+        min_x: 0.1
+        max_x: 0.8
+        min_y: -0.7
+        max_y: 0.15
+        min_z: -0.01
+        max_z: 0.7
+        input_frame: /world
+        </rosparam>
+    </node>
+
+  <!-- Launch planning scene -->
+  <include file="$(find rpad_ros)/launch/table1_planning_scene.launch" />
+
+  <node type="rviz" name="rviz" pkg="rviz" required="true" args="-d $(find taxpose_ros)/launch/rviz/trial_workspace.rviz" />
+</launch>
